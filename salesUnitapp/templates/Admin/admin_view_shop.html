@@ -1,0 +1,39 @@
+{% extends 'Admin/admin_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>Shop List</h2>
+<table class="table" border="1">
+    <tr>
+        <th>Name</th> 
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Shop Image</th>
+        <th>Licence No</th>
+        <th>Licenceid Img</th>
+        <th>Address</th>
+        <th>Approve</th>
+        <th>Reject</th>
+    </tr>
+    {% for x in var %}
+    <tr>
+        <td>{{x.name}}</td>  
+        <td>{{x.phone}}</td>  
+        <td>{{x.email}}</td> 
+        <td><img src="{{x.img.url}}" width="100px" height="100px"></td>
+        <td>{{x.licence_no}}</td>
+        <td><img src="{{x.licenceid_img.url}}" width="100px" height="100px"></td>
+        <td>{{x.address}}</td>
+        <td><a href="/admin_approve_shop/?id={{x.id}}">Approve</a></td>
+        <td><a href="/admin_reject_shop/?id={{x.id}}">Reject</a></td>
+    </tr>
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+{% endblock %}

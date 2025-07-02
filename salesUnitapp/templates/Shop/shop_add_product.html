@@ -1,0 +1,64 @@
+{% extends 'Shop/shop_home.html' %}
+{% block content %}
+
+
+
+<div class="contact-w3l">
+    <div class="container">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l">ADD Products
+            <span class="heading-style">
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+        </h3>
+        <!-- //tittle heading -->
+        <!-- contact -->
+        <div class="contact agileits">
+            <div class="contact-agileinfo">
+                <div class="contact-form wthree">
+                    <form action="/shop_add_product/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="">
+                            <input type="text" name="name" placeholder="Product Name" required="">
+                        </div>
+                        <div class="">
+                            <label>Product Image</label>
+                            <input class="text" type="file" name="img" placeholder="image" required="">
+                        </div>
+                        <br>
+                        <div class="">
+                            <input class="text" type="text" name="qty" placeholder="Quantity" required="">
+                        </div>
+                        <div class="">
+                            <input class="text" type="text" name="mesure" placeholder="KG/Ltr" required="">
+                        </div>
+                        <!-- <div class="">
+                            <label>License ID Image</label>
+                            <input class="file" type="file" name="licenceid_img" placeholder="licenceid_img" required="">
+                        </div> -->
+                        <br>
+                        <div class="">
+                            <input class="text" type="text" name="price" placeholder="Price" required="">
+                        </div>
+                        <!-- <div class="">
+                            <input class="text" type="text" name="pswd" placeholder="Password" required="">
+                        </div> -->
+                        
+                        <div class="">
+                            <textarea placeholder="Discription" name="discription" required=""></textarea>
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- //contact -->
+    </div>
+</div>
+
+
+
+{% endblock %}

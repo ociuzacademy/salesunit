@@ -1,0 +1,37 @@
+{% extends 'Shop/shop_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>Product List</h2>
+<table class="table" border="1">
+    <tr>
+        <th>Product Image</th>
+        <th>Name</th> 
+        <th>Quantity</th>
+        <th>Measure(KG/Ltr)</th>
+        <th>Price</th>
+        <th>Discription</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for x in var %}
+    <tr>
+        <td><img src="{{x.img.url}}" width="100px" height="100px"></td>
+        <td>{{x.name}}</td>  
+        <td>{{x.qty}}</td>  
+        <td>{{x.mesure}}</td> 
+        <td>{{x.price}}</td>
+        <td>{{x.discription}}</td>
+        <td><a href="/shop_edit_product/?id={{x.id}}">Edit</a></td>
+        <td><a href="/shop_delete_product/?id={{x.id}}">Delete</a></td>
+    </tr>
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+{% endblock %}

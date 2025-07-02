@@ -1,0 +1,39 @@
+{% extends 'User/user_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+    
+<div class="row">
+<center>
+    <h2>Product Details</h2><br>
+    {% for x in var %}
+    <img src="{{x.img.url}}" width="100px" height="100px" >
+    <p>{{x.name}}<br>{{x.qty}}{{x.mesure}}<br>Rs:{{x.price}}<br>{{x.discription}}</p>
+    <br>
+    <form action="/user_view_review/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="ii" value="{{ii}}">
+        <!-- <textarea class="form-control" name="review"></textarea> -->
+        <input type="text" class="form-control" name="review" style="width: 500px;height: 100px;" placeholder="Type Your Reviews Here..."><br>
+        <button type="submit" class="btn btn-primary">Submit</button>   
+   </form>
+   {% endfor %}
+</center>
+</div>
+
+<div class="row">
+<div style="align-items: center;">
+<h2>Reviews Here</h2>
+    {% for x in review %}
+    <p style="color: black;opacity: 1;">**{{x.review}}</p>
+    {% endfor %}
+</div>
+</div>
+
+</div>
+
+
+
+{% endblock %}

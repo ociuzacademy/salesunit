@@ -1,0 +1,28 @@
+{% extends 'User/user_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>PROFILE</h2>
+<table class="table" border="0">
+    {% for x in var %}
+    <tr>
+        <th>Name</th><td>{{x.name}}</td>  
+    </tr>
+        <tr> <th>Phone</th><td>{{x.phone}}</td>  </tr>
+        <tr> <th>Email</th><td>{{x.email}}</td>  </tr>
+        <tr> <th>Phone</th><td>{{x.phone}}</td>  </tr>
+       
+    <tr>
+        <th>Address</th><td>{{x.address}}</td>
+    </tr>
+    <tr><td colspan="2"><a href="/user_edit_profile/" class="btn btn-warning">EDIT</a></td></tr>
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+{% endblock %}

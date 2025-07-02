@@ -1,0 +1,30 @@
+{% extends 'Admin/admin_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>Customer Feedback</h2>
+<table class="table" border="1">
+    <tr>
+        <th>Sl.No.</th> 
+        <th>Date</th>
+        <th>User Details</th>
+        <th>Feedback</th>
+        <!-- <th></th>   -->
+    </tr>
+    {% for x in var %}
+    <tr>
+        <td>{{forloop.counter}}</td>  
+        <td>{{x.date}}</td>
+        <td>{{x.user_id.name}}<br>{{x.user_id.phone}}</td>  
+        <td>{{x.feedback}}</td> 
+        <!-- <td></td>  -->
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+
+
+{% endblock %}

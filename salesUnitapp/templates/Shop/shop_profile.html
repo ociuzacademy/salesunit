@@ -1,0 +1,29 @@
+{% extends 'Shop/shop_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>PROFILE</h2>
+<table class="table" border="0">
+    {% for x in var %}
+    <tr>
+        <th>Name</th><td>{{x.name}}</td>  
+    </tr>
+        <tr> <th>Phone</th><td>{{x.phone}}</td>  </tr>
+        <tr> <th>Email</th><td>{{x.email}}</td>  </tr>
+        <tr> <th>Shop Image</th><td><img src="{{x.img.url}}" width="100px" height="100px"></td>  </tr>
+        <tr> <th>Licence No</th> <td>{{x.licence_no}}</td>  </tr>
+        <tr> <th>Licenceid Img</th><td><img src="{{x.licenceid_img.url}}" width="100px" height="100px"></td>  </tr>
+    <tr>
+        <th>Address</th><td>{{x.address}}</td>
+    </tr>
+    <tr><td colspan="2"><a href="/shop_edit_profile/" class="btn btn-warning">EDIT</a></td></tr>
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+{% endblock %}

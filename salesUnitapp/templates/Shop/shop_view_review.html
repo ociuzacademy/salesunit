@@ -1,0 +1,43 @@
+{% extends 'Shop/shop_home.html' %}
+{% block content %}
+
+<br>
+<div class="container">
+  <h2>Product Reviews</h2>
+
+  {% if txt %}
+    <p style="color:red;">{{ txt }}</p>
+  {% endif %}
+
+  <table class="table" border="1">
+    <tr>
+        <th>Sl.No.</th>
+        <th>Date</th>
+        <th>User Details</th>
+        <th>Product Details</th>
+        <th>Review</th>
+    </tr>
+    {% for x in var %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ x.date }}</td>
+        <td>{{ x.user_id.name }}<br>{{ x.user_id.email }}</td>
+        <td>
+            <img src="{{ x.product_id.img.url }}" width="50px" height="50px"><br>
+            {{ x.product_id.name }}<br>
+            ₹{{ x.product_id.price }}
+        </td>
+        <td>{{ x.review }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<style>
+  th {
+    background-color: #ff5722;
+    color: white !important;
+  }
+</style>
+
+{% endblock %}

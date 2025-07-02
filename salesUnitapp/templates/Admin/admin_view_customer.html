@@ -1,0 +1,33 @@
+{% extends 'Admin/admin_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+<h2>Customer List</h2>
+<table class="table" border="1">
+    <tr>
+        <th>Name</th> 
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Address</th>
+        
+        
+    </tr>
+    {% for x in var %}
+    <tr>
+        <td>{{x.name}}</td>  
+        <td>{{x.phone}}</td>  
+        <td>{{x.email}}</td> 
+        <td>{{x.address}}</td>
+        
+        
+    </tr>
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'User/user_home.html' %}
+{% block content %}
+
+
+
+<div class="contact-w3l">
+    <div class="container">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l">Send Feedback
+            <span class="heading-style">
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+        </h3>
+        <!-- //tittle heading -->
+        <!-- contact -->
+        <div class="contact agileits">
+            <div class="contact-agileinfo">
+                <div class="contact-form wthree">
+                    <form action="/user_feedback/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <div class="">
+                            <input type="text" name="name" placeholder="Product Name" required="">
+                        </div>
+                        <div class="">
+                            <label>Product Image</label>
+                            <input class="text" type="file" name="img" placeholder="image" required="">
+                        </div>
+                        <br> -->
+                       
+                        
+                       
+                        <!-- <br>
+                        <div class="">
+                            <input class="text" type="text" name="price" placeholder="Price" required="">
+                        </div> -->
+                        <!-- <div class="">
+                            <input class="text" type="text" name="pswd" placeholder="Password" required="">
+                        </div> -->
+                        
+                        <div class="">
+                            <textarea placeholder="Feedback" name="feedback" required=""></textarea>
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <!-- //contact -->
+    </div>
+</div>
+
+
+
+{% endblock %}

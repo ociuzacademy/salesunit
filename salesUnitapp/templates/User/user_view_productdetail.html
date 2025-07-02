@@ -1,0 +1,42 @@
+{% extends 'User/user_home.html' %}
+{% block content %}
+
+
+<br>
+<div class="container" >
+
+<center>
+    <h2>Product Details</h2><br>
+   
+    {% if var %}
+
+    {% for x in var %}
+    <img src="{{x.img.url}}" width="100px" height="100px" >
+    <p>{{x.name}}<br>{{x.qty}}{{x.mesure}}<br>Rs:{{x.price}}<br>{{x.discription}}</p>
+   
+    <br>
+    
+    <form action="/add_to_cart/" method="get">
+        {% csrf_token %}
+        <input type="hidden" name="ii" value="{{ii}}">
+        <input type="number" name="number" value="1" required  id="number">
+
+        <a onclick = "this.href='/add_to_cart/?id={{x.id}}&number=' + document.getElementById('number').value"><button type="button" class="btn btn-success btn-osx btn-lg">
+            𝘼𝙙𝙙 𝙏𝙤 𝘾𝙖𝙧𝙩</button></a>
+        <!-- <a href="/add_to_cart/?id={{x.id}}&number=' + document.getElementById('number').value'" ><button type="button" class="btn btn-success btn-osx btn-lg">
+                𝘼𝙙𝙙 𝙏𝙤 𝘾𝙖𝙧𝙩</button></a> -->
+        <!-- <button type="submit" class="btn btn-success">𝘼𝙙𝙙 𝙏𝙤 𝘾𝙖𝙧𝙩</button>  -->
+   </form>
+   {% endfor %}
+   {% else %}
+   {{ error }}
+   <br>
+   <a href="/user_buy/" class="btn btn-primary">Back</a>
+   <br>
+   {% endif %}
+</center>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'Shop/shop_home.html' %}
+{% block content %}
+
+
+
+<div class="contact-w3l">
+    <div class="container">
+        <!-- tittle heading -->
+        <h3 class="tittle-w3l">EDIT Profile
+            <span class="heading-style">
+                <i></i>
+                <i></i>
+                <i></i>
+            </span>
+        </h3>
+        <!-- //tittle heading -->
+        <!-- contact -->
+        <div class="contact agileits">
+            <div class="contact-agileinfo">
+                <div class="contact-form wthree">
+                    {% for x in var %}
+                    <form action="/shop_edit_profile/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <input type="hidden" name="ii" value="{{ii}}"> -->
+                        
+                        <div class="">
+                            <input type="text" name="name" placeholder="Name" required="" value="{{x.name}}">
+                        </div>
+                        <!-- <div class="">
+                            <label>Product Image</label>
+                            <input class="text" type="file" name="img" placeholder="image" required="">
+                        </div> -->
+                        <br>
+                        <div class="">
+                            <input class="text" type="text" name="phone" placeholder="Phone" required="" value="{{x.phone}}">
+                        </div>
+                        <div class="">
+                            <input class="text" type="text" name="email" placeholder="Email" required="" value="{{x.email}}">
+                        </div>
+                        <!-- <div class="">
+                            <label>License ID Image</label>
+                            <input class="file" type="file" name="licenceid_img" placeholder="licenceid_img" required="">
+                        </div> -->
+                        <br>
+                        <div class="">
+                            <input class="text" type="text" name="licence_no" placeholder="licence_no"  value="{{x.licence_no}}">
+                        </div>
+                        <!-- <div class="">
+                            <input class="text" type="text" name="pswd" placeholder="Password" required="">
+                        </div> -->
+                        
+                        <div class="">
+                            <input type="text" placeholder="Address" name="address" value="{{x.address}}">
+                            <!-- <textarea placeholder="Discription" name="discription" required=""></textarea> -->
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+        <!-- //contact -->
+    </div>
+</div>
+
+
+
+{% endblock %}
