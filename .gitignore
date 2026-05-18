@@ -2,7 +2,8 @@
 env/
 venv/
 .venv/
-
+myenv/
+myvenv/
 # Python cache
 __pycache__/
 *.pyc
@@ -18,7 +19,7 @@ media/
 # IDE files
 .vscode/
 
-videos/
+# videos/
 
-product_images/
+# product_images/
 
