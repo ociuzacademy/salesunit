@@ -102,38 +102,47 @@ def admin_home(request):
     return render(request, "Admin/admin_home.html")
 
 
+
 def admin_view_shop(request):
-    myid = request.session['id']
-    var = tb_shop.objects.all().filter(status='pending')
-    return render(request, "Admin/admin_view_shop.html", {'var': var})
+    var = tb_shop.objects.filter(status='pending')
+    return render(
+        request,
+        "Admin/admin_view_shop.html",
+        {'var': var}
+    )
 
 
 def admin_approve_shop(request):
-    ii = request.GET['id']
-    var = tb_shop.objects.all().filter(id=ii).update(status='approved')
+    ii = request.GET.get('id')
+
+    if ii:
+        tb_shop.objects.filter(id=ii).update(status='approved')
+
     return HttpResponseRedirect('/admin_view_shop/')
 
 
 def admin_reject_shop(request):
-    ii = request.GET['id']
-    var = tb_shop.objects.all().filter(id=ii).update(status='reject')
+    ii = request.GET.get('id')
+
+    if ii:
+        tb_shop.objects.filter(id=ii).update(status='reject')
+
     return HttpResponseRedirect('/admin_view_shop/')
 
 
+
+
 def admin_view_approved_shop(request):
-    myid = request.session['id']
     var = tb_shop.objects.all().filter(status='approved')
     return render(request, "Admin/admin_view_approved_shop.html", {'var': var})
 
 
 def admin_view_rejected_shop(request):
-    myid = request.session['id']
     var = tb_shop.objects.all().filter(status='reject')
     return render(request, "Admin/admin_view_rejected_shop.html", {'var': var})
 
 
 def admin_view_customer(request):
-    myid = request.session['id']
     var = tb_register.objects.all().filter(utype='user')
     return render(request, "Admin/admin_view_customer.html", {'var': var})
 
@@ -197,9 +206,12 @@ def shop_profile(request):
     var = tb_shop.objects.all().filter(id=myid)
     return render(request, "Shop/shop_profile.html", {'var': var})
 
+from PIL import Image
+from .ai_search import get_image_embedding
 
 def shop_add_product(request):
     myid = request.session['id']
+
     if request.method == "POST":
         name = request.POST['name']
         img = request.FILES['img']
@@ -207,13 +219,29 @@ def shop_add_product(request):
         price = request.POST['price']
         mesure = request.POST['mesure']
         discription = request.POST['discription']
-        sh_id = tb_shop.objects.get(id=myid)
-        tb_product(name=name, img=img, qty=qty, price=price,
-                   mesure=mesure, discription=discription, status='pending', shop_id=sh_id).save()
-        return render(request, 'Shop/shop_add_product.html')
-    else:
-        return render(request, 'Shop/shop_add_product.html')
 
+        sh_id = tb_shop.objects.get(id=myid)
+
+        # Generate CLIP embedding from uploaded image
+        image = Image.open(img).convert("RGB")
+        embedding = get_image_embedding(image)
+
+        # Save product and embedding
+        tb_product.objects.create(
+            name=name,
+            img=img,
+            qty=qty,
+            price=price,
+            mesure=mesure,
+            discription=discription,
+            status='pending',
+            shop_id=sh_id,
+            image_embedding=embedding
+        )
+
+        return HttpResponseRedirect('/shop_view_product/')
+
+    return render(request, 'Shop/shop_add_product.html')
 
 def shop_view_product(request):
     myid = request.session['id']

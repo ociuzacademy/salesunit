@@ -39,7 +39,9 @@ class tb_product(models.Model):
     price = models.CharField(max_length=100, default='')
     discription = models.CharField(max_length=500, default='')
     status = models.CharField(max_length=100, default='')
-    shop_id = models.ForeignKey(tb_shop, on_delete=models.CASCADE, blank=True, null=True)
+    shop_id = models.ForeignKey(tb_shop,on_delete=models.CASCADE,blank=True,null=True)
+    # AI image search
+    image_embedding = models.JSONField(null=True,blank=True,default=None)
 
 
 class tb_feedback(models.Model):
