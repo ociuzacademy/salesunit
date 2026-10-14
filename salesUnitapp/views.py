@@ -526,11 +526,172 @@ def user_buy(request):
     return render(request, 'User/user_buy.html', {'var': var})
 
 
-def user_products(request):
-    ii = request.GET['id']
-    var = tb_product.objects.all().filter(shop_id=ii, qty__gt=0)
-    return render(request, 'User/user_products.html', {'var': var})
+import base64
+from io import BytesIO
 
+from django.http import HttpResponse
+from django.shortcuts import render
+from PIL import Image, UnidentifiedImageError
+
+from .ai_search import get_image_embedding, similarity   # keep in sync with your module name
+from .models import tb_product
+
+# --- Tuning knobs (CLIP image-to-image cosine similarity) -------------------
+EXACT_THRESHOLD = 0.92    # same product / same photo scores roughly 0.90 - 1.00
+RELATED_MIN_SCORE = 0.50  # below this, a product is not considered related
+MAX_EXACT = 12
+MAX_RELATED = 24
+MAX_UPLOAD_BYTES = 5 * 1024 * 1024
+# ----------------------------------------------------------------------------
+
+
+def _preview_data_uri(image):
+    """Small base64 thumbnail so the results page can show the searched image."""
+    thumb = image.copy()
+    thumb.thumbnail((160, 160))
+    buffer = BytesIO()
+    thumb.save(buffer, format="JPEG", quality=80)
+    encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+    return "data:image/jpeg;base64," + encoded
+
+
+def user_products(request):
+    shop_id = request.GET.get('id') or request.POST.get('shop_id')
+
+    if not shop_id:
+        return HttpResponse("Shop ID is required.", status=400)
+
+    products = tb_product.objects.filter(shop_id=shop_id, qty__gt=0)
+
+    search_query = ""
+    search_performed = False
+    search_mode = ""
+    search_error = ""
+    search_message = ""
+    query_image_preview = ""
+    sections = []
+
+    if request.method == "POST":
+        search_query = request.POST.get('query', '').strip()
+        uploaded_image = request.FILES.get('query_image')
+
+        if uploaded_image:
+            # ---------------- Image search (priority) ----------------
+            search_performed = True
+            search_mode = "image"
+
+            try:
+                if uploaded_image.size > MAX_UPLOAD_BYTES:
+                    raise ValueError("too_large")
+
+                with Image.open(uploaded_image) as image:
+                    image = image.convert("RGB")
+                    query_embedding = get_image_embedding(image)
+                    query_image_preview = _preview_data_uri(image)
+
+                scored = []
+                for product in products:
+                    if not product.image_embedding:
+                        continue
+                    product.similarity_score = similarity(
+                        query_embedding, product.image_embedding
+                    )
+                    scored.append(product)
+
+                scored.sort(key=lambda p: p.similarity_score, reverse=True)
+
+                # Exact matches: effectively the same product image
+                exact = [p for p in scored if p.similarity_score >= EXACT_THRESHOLD]
+                exact = exact[:MAX_EXACT]
+                exact_ids = {p.id for p in exact}
+
+                # Related products: nearest neighbours that are not already exact
+                related = [
+                    p for p in scored
+                    if p.id not in exact_ids and p.similarity_score >= RELATED_MIN_SCORE
+                ][:MAX_RELATED]
+
+                if exact:
+                    count = len(exact)
+                    search_message = (
+                        f"We found {count} exact match{'es' if count > 1 else ''}."
+                    )
+                    if related:
+                        search_message += " Similar products are shown below."
+                elif related:
+                    search_message = "No exact match found. Showing related products."
+                else:
+                    search_message = "No matching or related products found. Try another image."
+
+                if exact:
+                    sections.append({
+                        'title': 'Exact Matches',
+                        'subtitle': 'Products that look the same as your image.',
+                        'products': exact,
+                        'exact': True,
+                    })
+                if related:
+                    sections.append({
+                        'title': 'Similar Products' if exact else 'Related Products',
+                        'subtitle': 'Ranked by how closely they resemble your image.',
+                        'products': related,
+                        'exact': False,
+                    })
+
+            except (UnidentifiedImageError, OSError):
+                search_error = "Please select a valid image."
+                search_message = search_error
+
+            except ValueError:
+                search_error = "Image is too large. Please choose one under 5 MB."
+                search_message = search_error
+
+            except Exception:
+                search_error = "Image search failed. Please try again."
+                search_message = search_error
+
+        elif search_query:
+            # ---------------- Name search ----------------
+            search_performed = True
+            search_mode = "name"
+
+            results = list(products.filter(name__icontains=search_query))
+
+            search_message = (
+                f'Products matching "{search_query}".' if results
+                else f'No products found for "{search_query}".'
+            )
+            sections.append({
+                'title': 'Search Results',
+                'subtitle': '',
+                'products': results,
+                'exact': False,
+            })
+
+    # ---------------- Default: all products ----------------
+    if not search_performed:
+        sections.append({
+            'title': 'All Available Products',
+            'subtitle': '',
+            'products': list(products),
+            'exact': False,
+        })
+
+    total_results = sum(len(s['products']) for s in sections)
+
+    context = {
+        'sections': sections,
+        'total_results': total_results,
+        'shop_id': shop_id,
+        'search_query': search_query,
+        'search_performed': search_performed,
+        'search_mode': search_mode,
+        'search_error': search_error,
+        'search_message': search_message,
+        'query_image_preview': query_image_preview,
+    }
+
+    return render(request, 'User/user_products.html', context)
 
 def user_view_productdetail(request):
     ii = request.GET['id']
